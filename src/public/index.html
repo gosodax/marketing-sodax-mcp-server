@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>SODAX Marketing MCP Server | AI-Powered Brand Guidelines & Technical Glossary</title>
+  <meta name="title" content="SODAX Marketing MCP Server | AI-Powered Brand Guidelines & Technical Glossary">
+  <meta name="description" content="Connect your AI assistant to SODAX brand guidelines and technical translation tools. 13 MCP tools for marketing teams: brand voice, visual identity, messaging frameworks, and DeFi terminology translation.">
+  <meta name="keywords" content="MCP server, Model Context Protocol, SODAX, brand guidelines, AI marketing tools, DeFi glossary, technical translation, brand bible, marketing automation">
+  <meta name="author" content="ICON Foundation">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://marketing.sodax.com/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://marketing.sodax.com/">
+  <meta property="og:title" content="SODAX Marketing MCP Server | AI-Powered Brand Guidelines">
+  <meta property="og:description" content="Connect your AI assistant to SODAX brand guidelines and technical translation tools. 13 MCP tools for marketing teams.">
+  <meta property="og:image" content="https://marketing.sodax.com/og-image.png">
+  <meta property="og:site_name" content="SODAX">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://marketing.sodax.com/">
+  <meta property="twitter:title" content="SODAX Marketing MCP Server | AI-Powered Brand Guidelines">
+  <meta property="twitter:description" content="Connect your AI assistant to SODAX brand guidelines and technical translation tools. 13 MCP tools for marketing teams.">
+  <meta property="twitter:image" content="https://marketing.sodax.com/og-image.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/favicon.ico">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Shrikhand&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SODAX Marketing MCP Server",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "description": "Model Context Protocol server providing AI assistants with access to SODAX brand guidelines and technical translation tools for marketing teams.",
+    "url": "https://marketing.sodax.com/",
+    "author": {
+      "@type": "Organization",
+      "name": "ICON Foundation",
+      "url": "https://icon.foundation"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Brand Bible Access",
+      "Technical Glossary Translation",
+      "Brand Voice Guidelines",
+      "Visual Identity Standards",
+      "Messaging Frameworks",
+      "DeFi Terminology Translation"
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      /* SODAX Design System Colors */
+      --cherry-soda: #a55c55;
+      --cherry-bright: #cc9e9a;
+      --cherry-brighter: #e3bebb;
+      --cherry-dark: #9c4846;
+      --cherry-grey: #d7cdcb;
+      --cream: #eaded4;
+      --cream-white: #ede6e6;
+      --almost-white: #f8f3f3;
+      --espresso: #483534;
+      --clay: #8e7e7d;
+      --clay-dark: #6b5c5b;
+      --clay-light: #b9acab;
+      --yellow-dark: #ecc100;
+      --yellow-accent: #ffd92f;
+      --white: #ffffff;
+      
+      /* Typography */
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Shrikhand', cursive;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--cream-white);
+      color: var(--espresso);
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: var(--cherry-soda);
+      padding: 5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -25%;
+      width: 150%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 560px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 1.125rem;
+      color: var(--cherry-brighter);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero h1 {
+      font-size: 2.625rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .accent {
+      color: var(--yellow-accent);
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 240px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+      background: var(--cherry-bright);
+      color: var(--white);
+    }
+
+    .btn-secondary {
+      background: var(--yellow-dark);
+      color: var(--cherry-dark);
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    .btn-arrow::after {
+      content: '→';
+      margin-left: 0.25rem;
+    }
+
+    /* Hero URL Box */
+    .hero-url-box {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-url-label {
+      font-size: 0.6875rem;
+      color: var(--cherry-brighter);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-url-code {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.8125rem;
+      color: var(--white);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      display: block;
+      word-break: break-all;
+      user-select: all;
+    }
+
+    /* Section Titles */
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title .icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      color: var(--cherry-soda);
+    }
+
+    .section-title .icon i {
+      display: block;
+    }
+
+    .section-title h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--espresso);
+      line-height: 1.1;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--espresso);
+      font-size: 1rem;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Use Cases Section */
+    .use-cases {
+      padding: 5rem 2rem;
+      background: var(--cream-white);
+    }
+
+    .use-cases-container {
+      max-width: 944px;
+      margin: 0 auto;
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .case-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 3rem 1.5rem 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .case-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(72, 53, 52, 0.1);
+    }
+
+    .case-card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .case-card-title .icon {
+      font-size: 1.25rem;
+      color: var(--cherry-bright);
+    }
+
+    .case-card-title .icon i {
+      display: block;
+    }
+
+    .case-card-title h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--espresso);
+      line-height: 1.2;
+    }
+
+    .case-card p {
+      color: var(--clay-dark);
+      font-size: 0.875rem;
+      line-height: 1.4;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 256px;
+      font-size: 0.6875rem;
+      color: var(--clay);
+      background: linear-gradient(to right, var(--cream-white), var(--cream-white));
+      line-height: 1.3;
+    }
+
+    /* Tools Section */
+    .tools {
+      padding: 5rem 2rem;
+      background: var(--almost-white);
+    }
+
+    .tools-container {
+      max-width: 944px;
+      margin: 0 auto;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 940px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tool-module {
+      background: var(--cream-white);
+      border-radius: 24px;
+      padding: 3rem 1.5rem 1.5rem;
+    }
+
+    .tool-module h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--espresso);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .tool-module p {
+      color: var(--clay-dark);
+      font-size: 0.875rem;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    .tool-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .tool-item code {
+      background: var(--espresso);
+      color: var(--yellow-accent);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.6875rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      white-space: nowrap;
+    }
+
+    .tool-item span {
+      font-size: 0.75rem;
+      color: var(--clay);
+    }
+
+    /* SDK Architecture */
+    .sdk-section {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 3.5rem 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .sdk-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .sdk-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sdk-column {
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    .sdk-number {
+      width: 64px;
+      height: 64px;
+      background: var(--cherry-grey);
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.5rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--espresso);
+    }
+
+    .sdk-column h4 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--espresso);
+      margin-bottom: 0.5rem;
+    }
+
+    .sdk-column p {
+      font-size: 0.75rem;
+      color: black;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Connection Section */
+    .connection {
+      padding: 5rem 2rem;
+      background: var(--cream-white);
+      text-align: center;
+    }
+
+    .connection-content {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .connection h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--espresso);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .connection h2 .accent {
+      color: var(--yellow-dark);
+    }
+
+    .connection-subtitle {
+      font-size: 1.125rem;
+      color: var(--espresso);
+      line-height: 1.2;
+      margin-bottom: 2rem;
+    }
+
+    .code-block {
+      background: var(--espresso);
+      border-radius: 24px;
+      padding: 1.5rem;
+      max-width: 500px;
+      margin: 2rem auto;
+      overflow-x: auto;
+      text-align: left;
+    }
+
+    .code-block pre {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.8125rem;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    .code-block .key {
+      color: var(--yellow-accent);
+    }
+
+    .code-block .string {
+      color: #98C379;
+    }
+
+    .contact-info {
+      font-size: 0.875rem;
+      color: var(--espresso);
+      margin-top: 1.5rem;
+    }
+
+    .contact-info a {
+      color: var(--clay);
+    }
+
+    /* Agent Banner */
+    .agents-section {
+      background: var(--cream-white);
+      padding: 2rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .agents-section::before,
+    .agents-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 200px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .agents-section::before {
+      left: 0;
+      background: linear-gradient(to right, var(--cream-white) 0%, transparent 100%);
+    }
+
+    .agents-section::after {
+      right: 0;
+      background: linear-gradient(to left, var(--cream-white) 0%, transparent 100%);
+    }
+
+    .agents-label {
+      text-align: center;
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--clay-dark);
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 3;
+    }
+
+    .agents-track {
+      display: flex;
+      width: max-content;
+      animation: scroll 40s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .agents-track:hover {
+      animation-play-state: paused;
+    }
+
+    .agent-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin: 0 1.5rem;
+      opacity: 0.25;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+
+    .agent-icon:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .agent-icon img,
+    .agent-icon svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .agent-icon.scale-up img {
+      width: 160%;
+      height: 160%;
+    }
+
+    .agent-icon.scale-down img {
+      width: 75%;
+      height: 75%;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--almost-white);
+      padding: 5rem 2rem;
+    }
+
+    .footer-container {
+      max-width: 944px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 3rem;
+    }
+
+    .footer-brand {
+      max-width: 260px;
+    }
+
+    .footer-logo {
+      font-family: var(--font-primary);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--espresso);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-logo img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .footer-copyright {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--cherry-bright);
+      line-height: 1.4;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-column h4 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--cherry-bright);
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-column a {
+      font-size: 0.75rem;
+      color: var(--espresso);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: color 0.2s;
+    }
+
+    .footer-column a:hover {
+      color: var(--cherry-bright);
+    }
+
+    .footer-column a .external::after {
+      content: '↗';
+      font-size: 0.625rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .hero {
+        padding: 3rem 1rem;
+      }
+
+      .section-title h2 {
+        font-size: 1.5rem;
+      }
+
+      .cases-grid,
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <header class="hero" role="banner">
+    <div class="hero-content">
+      <p class="hero-eyebrow">SODAX Marketing MCP Server</p>
+      <h1>Marketing resources <span class="accent">at your fingertips.</span></h1>
+      <p class="hero-subtitle">Paste this MCP URL into your AI agent and give it SODAX marketing superpowers. Instant access to brand guidelines and terminology translation.</p>
+      
+      <div class="hero-url-box">
+        <div class="hero-url-label">
+          <i class="ph-duotone ph-link"></i>
+          MCP Server URL
+        </div>
+        <code class="hero-url-code">https://marketing.sodax.com/mcp</code>
+      </div>
+      
+      <nav class="hero-badges" aria-label="Quick actions">
+        <a href="#tools" class="btn btn-primary btn-arrow">Explore Tools</a>
+        <a href="#connect" class="btn btn-secondary">Get Started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+  <!-- Use Cases Section -->
+  <section class="use-cases" aria-labelledby="use-cases-heading">
+    <div class="use-cases-container">
+      <div class="section-title">
+        <span class="icon" aria-hidden="true"><i class="ph-duotone ph-chats-circle"></i></span>
+        <h2 id="use-cases-heading">What can you ask?</h2>
+      </div>
+      <p class="section-subtitle">Common prompts for AI agents connected to this MCP server.</p>
+      
+      <div class="cases-grid">
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-chat-teardrop-text"></i></span>
+            <h3>Brand Voice</h3>
+          </div>
+          <p>"Does this tweet match our brand voice?"</p>
+          <div class="badge-row">
+            <span class="badge">Brand Bible</span>
+            <span class="badge">Voice & Tone</span>
+          </div>
+        </div>
+        
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-palette"></i></span>
+            <h3>Visual Identity</h3>
+          </div>
+          <p>"What colors should I use for this campaign?"</p>
+          <div class="badge-row">
+            <span class="badge">Brand Bible</span>
+            <span class="badge">Colors</span>
+          </div>
+        </div>
+        
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-translate"></i></span>
+            <h3>Technical Translation</h3>
+          </div>
+          <p>"Explain what a Solver does in simple terms"</p>
+          <div class="badge-row">
+            <span class="badge">Glossary</span>
+            <span class="badge">Translation</span>
+          </div>
+        </div>
+        
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-target"></i></span>
+            <h3>Positioning</h3>
+          </div>
+          <p>"What's our positioning statement?"</p>
+          <div class="badge-row">
+            <span class="badge">Brand Bible</span>
+            <span class="badge">Strategy</span>
+          </div>
+        </div>
+        
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-books"></i></span>
+            <h3>Content Simplification</h3>
+          </div>
+          <p>"Translate 'cross-network liquidity' for non-technical readers"</p>
+          <div class="badge-row">
+            <span class="badge">Glossary</span>
+            <span class="badge">Simplify</span>
+          </div>
+        </div>
+        
+        <div class="case-card">
+          <div class="case-card-title">
+            <span class="icon" aria-hidden="true"><i class="ph-duotone ph-magnifying-glass"></i></span>
+            <h3>Term Discovery</h3>
+          </div>
+          <p>"What terms relate to the Money Market?"</p>
+          <div class="badge-row">
+            <span class="badge">Glossary</span>
+            <span class="badge">Search</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools Section -->
+  <section class="tools" id="tools" aria-labelledby="tools-heading">
+    <div class="tools-container">
+      <div class="section-title">
+        <span class="icon" aria-hidden="true"><i class="ph-duotone ph-toolbox"></i></span>
+        <h2 id="tools-heading">Available Tools</h2>
+      </div>
+      <p class="section-subtitle">13 tools across 2 categories for marketing teams.</p>
+      
+      <div class="tools-grid">
+        <div class="tool-module">
+          <h3>Brand Bible</h3>
+          <p>Access SODAX brand guidelines, voice & tone, visual identity, and messaging frameworks.</p>
+          <div class="tool-list">
+            <div class="tool-item">
+              <code>sodax_get_marketing_overview</code>
+              <span>High-level overview</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_section</code>
+              <span>Get specific section</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_subsection</code>
+              <span>Get subsection (e.g., 3.1)</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_search_marketing</code>
+              <span>Search by keyword</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_refresh_marketing</code>
+              <span>Refresh cached data</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_list_subsections</code>
+              <span>List all subsections</span>
+            </div>
+          </div>
+          <div class="badge-row" style="margin-top: 1rem;">
+            <span class="badge">6 tools</span>
+          </div>
+        </div>
+        
+        <div class="tool-module">
+          <h3>Technical Glossary</h3>
+          <p>Translate complex DeFi and blockchain terminology into accessible language for any audience.</p>
+          <div class="tool-list">
+            <div class="tool-item">
+              <code>sodax_get_glossary_overview</code>
+              <span>Terms overview</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_list_glossary_terms</code>
+              <span>List all terms</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_glossary_term</code>
+              <span>Look up term</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_search_glossary</code>
+              <span>Search glossary</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_translate_term</code>
+              <span>Simplify terms</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_terms_by_tag</code>
+              <span>Get by category</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_refresh_glossary</code>
+              <span>Refresh data</span>
+            </div>
+          </div>
+          <div class="badge-row" style="margin-top: 1rem;">
+            <span class="badge">7 tools</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SDK Architecture -->
+      <div class="sdk-section">
+        <div class="section-title" style="margin-bottom: 2rem;">
+          <span class="icon" aria-hidden="true"><i class="ph-duotone ph-database"></i></span>
+          <h2 id="data-sources-heading">Data Sources</h2>
+        </div>
+        <div class="sdk-columns">
+          <div class="sdk-column">
+            <div class="sdk-number">1</div>
+            <h4>Notion Brand Bible</h4>
+            <p>Official SODAX brand guidelines maintained in Notion</p>
+            <span class="badge">Live sync</span>
+          </div>
+          <div class="sdk-column">
+            <div class="sdk-number">2</div>
+            <h4>Technical Glossary</h4>
+            <p>Translation database for DeFi & blockchain terminology</p>
+            <span class="badge">Live sync</span>
+          </div>
+          <div class="sdk-column">
+            <div class="sdk-number">3</div>
+            <h4>5-Minute Cache</h4>
+            <p>Fast responses with automatic refresh for fresh data</p>
+            <span class="badge">Optimized</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agent Banner -->
+  <section class="agents-section" aria-label="Compatible AI agents">
+    <p class="agents-label">Works with these agents & more</p>
+    <div class="agents-track">
+      <!-- First set - Verified MCP clients with links -->
+      <a href="https://claude.ai" target="_blank" rel="noopener" class="agent-icon scale-up" title="Claude"><img src="/images/agents/claude-code.svg" alt="Claude"></a>
+      <a href="https://chatgpt.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="ChatGPT"><img src="/images/agents/codex.svg" alt="ChatGPT"></a>
+      <a href="https://cursor.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Cursor"><img src="/images/agents/cursor.svg" alt="Cursor"></a>
+      <a href="https://code.visualstudio.com" target="_blank" rel="noopener" class="agent-icon scale-down" title="VS Code"><img src="/images/agents/vscode.svg" alt="VS Code"></a>
+      <a href="https://codeium.com/windsurf" target="_blank" rel="noopener" class="agent-icon scale-up" title="Windsurf"><img src="/images/agents/windsurf.svg" alt="Windsurf"></a>
+      <a href="https://cline.bot" target="_blank" rel="noopener" class="agent-icon scale-up" title="Cline"><img src="/images/agents/cline.svg" alt="Cline"></a>
+      <a href="https://gemini.google.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Gemini"><img src="/images/agents/gemini.svg" alt="Gemini"></a>
+      <a href="https://block.github.io/goose" target="_blank" rel="noopener" class="agent-icon scale-up" title="Goose"><img src="/images/agents/goose.svg" alt="Goose"></a>
+      <a href="https://roocode.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Roo Code"><img src="/images/agents/roocode.svg" alt="Roo Code"></a>
+      <!-- Duplicate for infinite scroll -->
+      <a href="https://claude.ai" target="_blank" rel="noopener" class="agent-icon scale-up" title="Claude"><img src="/images/agents/claude-code.svg" alt="Claude"></a>
+      <a href="https://chatgpt.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="ChatGPT"><img src="/images/agents/codex.svg" alt="ChatGPT"></a>
+      <a href="https://cursor.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Cursor"><img src="/images/agents/cursor.svg" alt="Cursor"></a>
+      <a href="https://code.visualstudio.com" target="_blank" rel="noopener" class="agent-icon scale-down" title="VS Code"><img src="/images/agents/vscode.svg" alt="VS Code"></a>
+      <a href="https://codeium.com/windsurf" target="_blank" rel="noopener" class="agent-icon scale-up" title="Windsurf"><img src="/images/agents/windsurf.svg" alt="Windsurf"></a>
+      <a href="https://cline.bot" target="_blank" rel="noopener" class="agent-icon scale-up" title="Cline"><img src="/images/agents/cline.svg" alt="Cline"></a>
+      <a href="https://gemini.google.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Gemini"><img src="/images/agents/gemini.svg" alt="Gemini"></a>
+      <a href="https://block.github.io/goose" target="_blank" rel="noopener" class="agent-icon scale-up" title="Goose"><img src="/images/agents/goose.svg" alt="Goose"></a>
+      <a href="https://roocode.com" target="_blank" rel="noopener" class="agent-icon scale-up" title="Roo Code"><img src="/images/agents/roocode.svg" alt="Roo Code"></a>
+    </div>
+  </section>
+
+  <!-- Connection Section -->
+  <section class="connection" id="connect" aria-labelledby="connect-heading">
+    <div class="connection-content">
+      <h2 id="connect-heading">Get started. <span class="accent">Skip the setup.</span></h2>
+      <p class="connection-subtitle">Connect your AI assistant to SODAX marketing resources with one simple configuration.</p>
+      
+      <div class="code-block">
+        <pre>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"sodax-marketing"</span>: {
+      <span class="key">"url"</span>: <span class="string">"https://marketing.sodax.com/mcp"</span>
+    }
+  }
+}</pre>
+      </div>
+      
+      <p class="contact-info">
+        Questions? Reach out to <a href="mailto:marketing@sodax.com">marketing@sodax.com</a>
+      </p>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo"><img src="/images/symbol.png" alt="SODAX" width="24" height="24"> SODAX</div>
+        <p class="footer-copyright">© 2025 ICON Foundation.<br>All rights reserved.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>resources</h4>
+          <ul>
+            <li><a href="/api">API Info</a></li>
+            <li><a href="/health">Health Check</a></li>
+            <li><a href="https://docs.sodax.com" class="external">Documentation ↗</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>socials</h4>
+          <ul>
+            <li><a href="https://discord.gg/sodax" class="external">Discord ↗</a></li>
+            <li><a href="https://twitter.com/sodax" class="external">X (Twitter) ↗</a></li>
+            <li><a href="https://github.com/icon-project" class="external">GitHub ↗</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>using soda</h4>
+          <ul>
+            <li><a href="https://hanawallet.io" class="external">Hana Wallet ↗</a></li>
+            <li><a href="https://balanced.network" class="external">Balanced DeFi ↗</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
