@@ -1,0 +1,25 @@
+feat: Add Notion API integration + Marketing Stats module
+
+BREAKING: Replaced HTML scraping with official Notion API for reliability
+
+Brand Bible & Glossary:
+- Refactored to use @notionhq/client v5.9 (dataSources.query API)
+- Brand Bible: blocks.children.list for page content parsing
+- Glossary: Two databases (system-concepts, system-components)
+- Fallback to hardcoded data when NOTION_TOKEN not set
+
+Marketing Stats (6 new tools):
+- sodax_get_stats_overview: High-level marketing summary
+- sodax_get_networks: Supported destination networks
+- sodax_get_partners: Integration partners with details
+- sodax_get_token_supply: SODA token supply breakdown
+- sodax_get_money_market_assets: Assets and TVL data
+- sodax_refresh_stats: Force cache refresh
+
+Infrastructure:
+- Added dotenv for .env file support
+- Updated docker-compose.yml with NOTION_TOKEN passthrough
+- Updated README and landing page (13 to 19 tools)
+
+Environment variables:
+- NOTION_TOKEN: Required for live Notion sync (optional, has fallback)

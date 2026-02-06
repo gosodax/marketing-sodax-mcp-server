@@ -1,10 +1,13 @@
 #!/usr/bin/env node
+import "dotenv/config";
+
 /**
  * SODAX Marketing MCP Server
  * 
  * Brand guidelines and marketing resources for content teams.
- * Brand bible is fetched from Notion (auto-updates every 5 min).
- * Technical glossary helps translate complex concepts for marketing.
+ * - Brand Bible: fetched from Notion via API (auto-updates every 5 min)
+ * - Technical Glossary: System Concepts & Components from Notion
+ * - Marketing Stats: live data from SODAX API (networks, partners, token supply)
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -18,6 +21,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { registerBrandBibleTools } from "./tools/brandBible.js";
 import { registerGlossaryTools } from "./tools/glossary.js";
+import { registerStatsTools } from "./tools/stats.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,6 +36,9 @@ registerBrandBibleTools(server);
 
 // Register technical glossary tools
 registerGlossaryTools(server);
+
+// Register marketing stats tools
+registerStatsTools(server);
 
 async function runStdio(): Promise<void> {
   const transport = new StdioServerTransport();

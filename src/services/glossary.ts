@@ -1,18 +1,37 @@
 /**
  * Technical Glossary Service
- * 
- * Fetches and parses the SODAX Technical Translation Glossary from Notion.
- * Helps marketing teams translate technical concepts for non-technical audiences.
+ *
+ * Fetches the SODAX Technical Glossary from two Notion databases via the
+ * official Notion API.  New entries added to either database in Notion are
+ * picked up automatically on the next cache refresh (every 5 min or on demand).
+ *
+ * Sources:
+ *   - System Concepts — high-level ideas and principles behind SODAX
+ *   - System Components — concrete parts and modules that make up SODAX
  */
 
-import axios from "axios";
-import * as cheerio from "cheerio";
-import { GLOSSARY_URL, GLOSSARY_CACHE_DURATION_MS } from "../constants.js";
+import { Client as NotionClient, isFullPage } from "@notionhq/client";
+import type {
+  PageObjectResponse,
+  RichTextItemResponse,
+} from "@notionhq/client/build/src/api-endpoints.js";
+import {
+  GLOSSARY_SYSTEM_CONCEPTS_DB,
+  GLOSSARY_SYSTEM_COMPONENTS_DB,
+  GLOSSARY_CACHE_DURATION_MS,
+} from "../constants.js";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export type GlossaryCategory = "system-concept" | "system-component";
 
 export interface GlossaryTerm {
   title: string;
   summary: string;
   tags: string[];
+  category: GlossaryCategory;
   owner?: string;
 }
 
@@ -22,322 +41,363 @@ export interface GlossaryData {
   terms: GlossaryTerm[];
 }
 
+// ---------------------------------------------------------------------------
+// Notion client (lazy-initialised so the server can start without a token and
+//               fall back to hardcoded data)
+// ---------------------------------------------------------------------------
+
+let notionClient: NotionClient | null = null;
+
+function getNotionClient(): NotionClient | null {
+  if (notionClient) return notionClient;
+  const token = process.env.NOTION_TOKEN;
+  if (!token) {
+    console.error(
+      "NOTION_TOKEN not set — glossary will use hardcoded fallback data. " +
+        "Set the NOTION_TOKEN environment variable for live Notion sync."
+    );
+    return null;
+  }
+  notionClient = new NotionClient({ auth: token });
+  return notionClient;
+}
+
+// ---------------------------------------------------------------------------
+// Cache
+// ---------------------------------------------------------------------------
+
 let cachedGlossary: GlossaryData | null = null;
 let lastGlossaryFetchTime: Date | null = null;
 
-/**
- * Check if glossary cache is still valid
- */
 function isGlossaryCacheValid(): boolean {
   if (!cachedGlossary || !lastGlossaryFetchTime) return false;
-  const now = new Date();
-  return now.getTime() - lastGlossaryFetchTime.getTime() < GLOSSARY_CACHE_DURATION_MS;
+  return Date.now() - lastGlossaryFetchTime.getTime() < GLOSSARY_CACHE_DURATION_MS;
 }
 
-/**
- * Fetch and parse the technical glossary from Notion
- */
+// ---------------------------------------------------------------------------
+// Hardcoded fallback terms
+// Kept as a safety net when the Notion API is unreachable or unconfigured.
+// ---------------------------------------------------------------------------
+
+const FALLBACK_SYSTEM_CONCEPTS: GlossaryTerm[] = [
+  {
+    title: "Modern money",
+    summary:
+      "Money that exists in programmable, multi-network systems, where its usefulness depends on coordinated execution, timing, and context, not just ownership.",
+    tags: ["money", "programmable", "multi-network", "execution"],
+    category: "system-concept",
+  },
+];
+
+const FALLBACK_SYSTEM_COMPONENTS: GlossaryTerm[] = [
+  {
+    title: "Money Market",
+    summary:
+      "A cross-network money market that lets SODAX and builders lend, borrow, and reuse capital across all integrated networks.",
+    tags: ["money-market", "lending", "borrowing", "cross-network", "capital", "yield", "solver", "sdk"],
+    category: "system-component",
+  },
+  {
+    title: "AMM",
+    summary:
+      "The SODAX AMM is SODAX's internal decentralized exchange on the Sonic network, used to create tradeable markets for SODAX-native assets, primarily paired against bnUSD.",
+    tags: ["system", "amm", "liquidity", "execution", "settlement"],
+    category: "system-component",
+  },
+  {
+    title: "sodaVariants",
+    summary:
+      "sodaVariants are how SODAX extends assets into networks where they do not exist natively, making them immediately usable through system-level liquidity.",
+    tags: ["system", "assets", "liquidity", "execution", "cross-network"],
+    category: "system-component",
+  },
+  {
+    title: "Liquidity",
+    summary:
+      "Liquidity is the SODAX system component that enables cross-network actions to complete by treating assets as a unified, globally accessible inventory rather than isolated pools.",
+    tags: ["system", "liquidity", "inventory", "execution", "cross-network"],
+    category: "system-component",
+  },
+  {
+    title: "Solver",
+    summary:
+      "The Solver is the part of SODAX responsible for deciding, initiating, and coordinating how a cross-network action is carried out, selecting the most reliable execution path across networks.",
+    tags: ["routing", "solver", "cross-network", "execution", "liquidity"],
+    category: "system-component",
+  },
+  {
+    title: "Coordinator",
+    summary:
+      "The coordinator is a solver component responsible for constructing and monitoring the execution plan for a cross-network action across networks.",
+    tags: ["system", "solver", "coordinator", "execution", "cross-network"],
+    category: "system-component",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Notion helpers
+// ---------------------------------------------------------------------------
+
+/** Extract plain text from a Notion rich-text array */
+function richTextToPlain(rt: RichTextItemResponse[]): string {
+  return rt.map((t) => t.plain_text).join("");
+}
+
+/** Convert a Notion database page to a GlossaryTerm */
+function pageToTerm(page: PageObjectResponse, category: GlossaryCategory): GlossaryTerm | null {
+  const props = page.properties;
+
+  // Title — Notion stores the title in a property of type "title"
+  const titleProp = Object.values(props).find((p) => p.type === "title");
+  const title = titleProp && titleProp.type === "title" ? richTextToPlain(titleProp.title) : "";
+
+  // Summary — look for "One-sentency summary" or "Summary" rich_text property
+  let summary = "";
+  for (const key of ["One-sentency summary", "Summary", "Description"]) {
+    const prop = props[key];
+    if (prop && prop.type === "rich_text") {
+      summary = richTextToPlain(prop.rich_text);
+      if (summary) break;
+    }
+  }
+
+  // Tags — multi_select property named "Tags"
+  const tagsProp = props["Tags"];
+  const tags: string[] =
+    tagsProp && tagsProp.type === "multi_select"
+      ? tagsProp.multi_select.map((t) => t.name)
+      : [];
+
+  // Owner — person property or rich_text named "Owner"
+  let owner: string | undefined;
+  const ownerProp = props["Owner"];
+  if (ownerProp?.type === "people" && ownerProp.people.length > 0) {
+    const person = ownerProp.people[0];
+    owner = "name" in person ? (person.name ?? undefined) : undefined;
+  } else if (ownerProp?.type === "rich_text") {
+    owner = richTextToPlain(ownerProp.rich_text) || undefined;
+  }
+
+  if (!title || !summary) return null;
+
+  return { title, summary, tags, category, owner };
+}
+
+/** Query all pages from a Notion database using dataSources.query (v5.9+) */
+async function queryDatabase(
+  notion: NotionClient,
+  databaseId: string,
+  category: GlossaryCategory
+): Promise<GlossaryTerm[]> {
+  const terms: GlossaryTerm[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const response = await notion.dataSources.query({
+      data_source_id: databaseId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+
+    for (const page of response.results) {
+      if (!isFullPage(page)) continue;
+      const term = pageToTerm(page, category);
+      if (term) terms.push(term);
+    }
+
+    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+
+  return terms;
+}
+
+// ---------------------------------------------------------------------------
+// Main fetch
+// ---------------------------------------------------------------------------
+
 export async function fetchGlossary(forceRefresh = false): Promise<GlossaryData> {
   if (!forceRefresh && isGlossaryCacheValid() && cachedGlossary) {
     return cachedGlossary;
   }
 
-  try {
-    const response = await axios.get(GLOSSARY_URL, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; SODAX-MCP-Server/1.0)",
-        "Accept": "text/html,application/xhtml+xml"
-      },
-      timeout: 30000
-    });
+  const notion = getNotionClient();
 
-    const glossary = parseGlossaryPage(response.data);
-    cachedGlossary = glossary;
-    lastGlossaryFetchTime = new Date();
-    
-    console.error(`Technical glossary fetched and cached at ${lastGlossaryFetchTime.toISOString()}`);
-    return glossary;
-  } catch (error) {
-    console.error("Error fetching glossary:", error);
-    
-    // Return cached version if available
-    if (cachedGlossary) {
-      console.error("Returning cached glossary due to fetch error");
-      return cachedGlossary;
+  if (notion) {
+    try {
+      const [concepts, components] = await Promise.all([
+        queryDatabase(notion, GLOSSARY_SYSTEM_CONCEPTS_DB, "system-concept"),
+        queryDatabase(notion, GLOSSARY_SYSTEM_COMPONENTS_DB, "system-component"),
+      ]);
+
+      const glossary: GlossaryData = {
+        title: "SODAX Technical Glossary",
+        lastUpdated: new Date(),
+        terms: [...concepts, ...components],
+      };
+
+      cachedGlossary = glossary;
+      lastGlossaryFetchTime = new Date();
+      console.error(
+        `Glossary fetched from Notion API at ${lastGlossaryFetchTime.toISOString()} — ` +
+          `${concepts.length} concepts, ${components.length} components`
+      );
+      return glossary;
+    } catch (error) {
+      console.error("Error fetching glossary from Notion API:", error);
+      if (cachedGlossary) {
+        console.error("Returning cached glossary due to API error");
+        return cachedGlossary;
+      }
+      // Fall through to fallback
     }
-    
-    // Return default structure if no cache
-    return createDefaultGlossary();
   }
-}
 
-/**
- * Parse Notion glossary page into structured data
- */
-function parseGlossaryPage(html: string): GlossaryData {
-  const $ = cheerio.load(html);
-  const terms: GlossaryTerm[] = [];
-
-  // Known terms from SODAX technical documentation
-  // These are extracted based on the Notion page structure
-  const knownTerms: GlossaryTerm[] = [
-    {
-      title: "Money Market",
-      summary: "A cross-network money market that lets SODAX and builders lend, borrow, and reuse capital across all integrated networks.",
-      tags: ["money-market", "lending", "borrowing", "cross-network", "capital", "yield", "solver", "sdk"]
-    },
-    {
-      title: "AMM",
-      summary: "The SODAX AMM is SODAX's internal decentralized exchange on the Sonic network, used to create tradeable markets for SODAX-native assets, primarily paired against bnUSD.",
-      tags: ["system", "amm", "liquidity", "execution", "settlement"]
-    },
-    {
-      title: "sodaVariants",
-      summary: "sodaVariants are how SODAX extends assets into networks where they do not exist natively, making them immediately usable through system-level liquidity.",
-      tags: ["system", "assets", "liquidity", "execution", "cross-network"]
-    },
-    {
-      title: "Liquidity",
-      summary: "Liquidity is the SODAX system component that enables cross-network actions to complete by treating assets as a unified, globally accessible inventory rather than isolated pools.",
-      tags: ["system", "liquidity", "inventory", "execution", "cross-network"]
-    },
-    {
-      title: "Solver",
-      summary: "The Solver is the part of SODAX responsible for deciding, initiating, and coordinating how a cross-network action is carried out, selecting the most reliable execution path across networks.",
-      tags: ["routing", "solver", "cross-network", "execution", "liquidity"]
-    },
-    {
-      title: "Coordinator",
-      summary: "The coordinator is a solver component responsible for constructing and monitoring the execution plan for a cross-network action across networks.",
-      tags: ["system", "solver", "coordinator", "execution", "cross-network"]
-    },
-    {
-      title: "Cross-Network Action",
-      summary: "A cross-network action is any operation that involves moving value or executing logic across multiple blockchain networks, orchestrated by SODAX's solver and liquidity systems.",
-      tags: ["cross-network", "execution", "solver", "interoperability"]
-    },
-    {
-      title: "bnUSD",
-      summary: "bnUSD is SODAX's native stablecoin used as the primary quote currency for trading pairs on the SODAX AMM and as a settlement layer for cross-network transactions.",
-      tags: ["stablecoin", "settlement", "amm", "trading"]
-    },
-    {
-      title: "Intent",
-      summary: "An intent is a user's desired outcome (like swapping tokens across chains) that SODAX's solver interprets and fulfills through the optimal execution path.",
-      tags: ["intent", "solver", "user-experience", "execution"]
-    },
-    {
-      title: "Execution Path",
-      summary: "The sequence of operations and networks chosen by the solver to fulfill a user's intent, optimized for reliability, speed, and cost.",
-      tags: ["execution", "routing", "solver", "optimization"]
-    }
-  ];
-
-  // Try to parse additional terms from the HTML
-  // Look for table rows or card-like structures
-  $('[class*="collection-item"], [class*="table-row"], tr').each((_, el) => {
-    const $el = $(el);
-    const title = $el.find('[class*="title"], td:first-child, h3, h2').first().text().trim();
-    const summary = $el.find('[class*="summary"], [class*="description"], td:nth-child(2)').first().text().trim();
-    const tagsText = $el.find('[class*="tag"], [class*="tags"]').text().trim();
-    
-    if (title && summary && title.length > 1 && summary.length > 10) {
-      const tags = tagsText ? tagsText.split(/[\s,]+/).filter(t => t.length > 0) : [];
-      
-      // Don't add if we already have this term
-      if (!knownTerms.some(t => t.title.toLowerCase() === title.toLowerCase())) {
-        terms.push({ title, summary, tags });
-      }
-    }
-  });
-
-  // Combine known terms with any newly parsed ones
-  const allTerms = [...knownTerms, ...terms];
-
-  return {
-    title: "SODAX Technical Translation Glossary",
+  // Fallback: hardcoded terms
+  const glossary: GlossaryData = {
+    title: "SODAX Technical Glossary",
     lastUpdated: new Date(),
-    terms: allTerms
+    terms: [...FALLBACK_SYSTEM_CONCEPTS, ...FALLBACK_SYSTEM_COMPONENTS],
   };
+
+  cachedGlossary = glossary;
+  lastGlossaryFetchTime = new Date();
+  console.error("Using hardcoded fallback glossary data");
+  return glossary;
 }
 
-/**
- * Create default glossary structure
- */
-function createDefaultGlossary(): GlossaryData {
-  return {
-    title: "SODAX Technical Translation Glossary",
-    lastUpdated: new Date(),
-    terms: [
-      {
-        title: "Solver",
-        summary: "The component that finds the best way to execute cross-network actions.",
-        tags: ["solver", "execution"]
-      },
-      {
-        title: "Cross-Network",
-        summary: "Operations that span multiple blockchain networks.",
-        tags: ["cross-network", "interoperability"]
-      }
-    ]
-  };
-}
+// ---------------------------------------------------------------------------
+// Public helpers consumed by tools
+// ---------------------------------------------------------------------------
 
-/**
- * Get glossary overview
- */
 export async function getGlossaryOverview(): Promise<{
   title: string;
   lastUpdated: string;
   termCount: number;
+  conceptCount: number;
+  componentCount: number;
   allTags: string[];
+  categories: GlossaryCategory[];
 }> {
   const glossary = await fetchGlossary();
-  
+
   const allTags = new Set<string>();
+  let conceptCount = 0;
+  let componentCount = 0;
   for (const term of glossary.terms) {
-    for (const tag of term.tags) {
-      allTags.add(tag);
-    }
+    for (const tag of term.tags) allTags.add(tag);
+    if (term.category === "system-concept") conceptCount++;
+    else componentCount++;
   }
-  
+
   return {
     title: glossary.title,
     lastUpdated: glossary.lastUpdated.toISOString(),
     termCount: glossary.terms.length,
-    allTags: Array.from(allTags).sort()
+    conceptCount,
+    componentCount,
+    allTags: Array.from(allTags).sort(),
+    categories: ["system-concept", "system-component"],
   };
 }
 
-/**
- * Get all glossary terms
- */
-export async function getAllTerms(): Promise<GlossaryTerm[]> {
+export async function getAllTerms(category?: GlossaryCategory): Promise<GlossaryTerm[]> {
   const glossary = await fetchGlossary();
-  return glossary.terms;
+  return category ? glossary.terms.filter((t) => t.category === category) : glossary.terms;
 }
 
-/**
- * Get a specific term by title
- */
 export async function getTerm(termTitle: string): Promise<GlossaryTerm | null> {
   const glossary = await fetchGlossary();
-  const titleLower = termTitle.toLowerCase();
-  
-  return glossary.terms.find(t => 
-    t.title.toLowerCase() === titleLower ||
-    t.title.toLowerCase().includes(titleLower)
-  ) || null;
-}
-
-/**
- * Search glossary by keyword or tag
- */
-export async function searchGlossary(query: string): Promise<GlossaryTerm[]> {
-  const glossary = await fetchGlossary();
-  const queryLower = query.toLowerCase();
-  const queryWords = queryLower.split(/\s+/);
-  
-  const results: { term: GlossaryTerm; score: number }[] = [];
-  
-  for (const term of glossary.terms) {
-    let score = 0;
-    const titleLower = term.title.toLowerCase();
-    const summaryLower = term.summary.toLowerCase();
-    
-    for (const word of queryWords) {
-      // Title match (high weight)
-      if (titleLower.includes(word)) score += 10;
-      // Tag match (medium weight)
-      if (term.tags.some(tag => tag.includes(word))) score += 5;
-      // Summary match (lower weight)
-      if (summaryLower.includes(word)) score += 2;
-    }
-    
-    // Exact title match bonus
-    if (titleLower === queryLower) score += 20;
-    
-    if (score > 0) {
-      results.push({ term, score });
-    }
-  }
-  
-  return results
-    .sort((a, b) => b.score - a.score)
-    .map(r => r.term);
-}
-
-/**
- * Get terms by tag
- */
-export async function getTermsByTag(tag: string): Promise<GlossaryTerm[]> {
-  const glossary = await fetchGlossary();
-  const tagLower = tag.toLowerCase();
-  
-  return glossary.terms.filter(term =>
-    term.tags.some(t => t.toLowerCase().includes(tagLower))
+  const q = termTitle.toLowerCase();
+  return (
+    glossary.terms.find(
+      (t) => t.title.toLowerCase() === q || t.title.toLowerCase().includes(q)
+    ) ?? null
   );
 }
 
-/**
- * Force refresh the glossary cache
- */
+export async function searchGlossary(
+  query: string,
+  category?: GlossaryCategory
+): Promise<GlossaryTerm[]> {
+  const glossary = await fetchGlossary();
+  const words = query.toLowerCase().split(/\s+/);
+
+  const scored: { term: GlossaryTerm; score: number }[] = [];
+
+  for (const term of glossary.terms) {
+    if (category && term.category !== category) continue;
+    let score = 0;
+    const tl = term.title.toLowerCase();
+    const sl = term.summary.toLowerCase();
+    for (const w of words) {
+      if (tl.includes(w)) score += 10;
+      if (term.tags.some((tag) => tag.toLowerCase().includes(w))) score += 5;
+      if (sl.includes(w)) score += 2;
+    }
+    if (tl === query.toLowerCase()) score += 20;
+    if (score > 0) scored.push({ term, score });
+  }
+
+  return scored.sort((a, b) => b.score - a.score).map((r) => r.term);
+}
+
+export async function getTermsByTag(
+  tag: string,
+  category?: GlossaryCategory
+): Promise<GlossaryTerm[]> {
+  const glossary = await fetchGlossary();
+  const q = tag.toLowerCase();
+  return glossary.terms.filter((term) => {
+    if (category && term.category !== category) return false;
+    return term.tags.some((t) => t.toLowerCase().includes(q));
+  });
+}
+
 export async function refreshGlossary(): Promise<{ success: boolean; message: string }> {
   try {
-    await fetchGlossary(true);
+    const glossary = await fetchGlossary(true);
     return {
       success: true,
-      message: `Glossary refreshed at ${lastGlossaryFetchTime?.toISOString()}`
+      message: `Glossary refreshed at ${lastGlossaryFetchTime?.toISOString()} — ${glossary.terms.length} total terms`,
     };
   } catch (error) {
     return {
       success: false,
-      message: `Failed to refresh: ${error instanceof Error ? error.message : "Unknown error"}`
+      message: `Failed to refresh: ${error instanceof Error ? error.message : "Unknown error"}`,
     };
   }
 }
 
-/**
- * Translate a technical term into simple language
- */
 export async function translateTerm(technicalTerm: string): Promise<{
   term: string;
+  category: GlossaryCategory;
   technicalDefinition: string;
   simpleExplanation: string;
   relatedTerms: string[];
 } | null> {
   const term = await getTerm(technicalTerm);
-  
   if (!term) return null;
-  
-  // Find related terms based on shared tags
+
   const glossary = await fetchGlossary();
   const relatedTerms: string[] = [];
-  
-  for (const otherTerm of glossary.terms) {
-    if (otherTerm.title === term.title) continue;
-    
-    const sharedTags = term.tags.filter(tag => otherTerm.tags.includes(tag));
-    if (sharedTags.length > 0) {
-      relatedTerms.push(otherTerm.title);
+  for (const other of glossary.terms) {
+    if (other.title === term.title) continue;
+    if (term.tags.some((tag) => other.tags.includes(tag))) {
+      relatedTerms.push(other.title);
     }
   }
-  
+
   return {
     term: term.title,
+    category: term.category,
     technicalDefinition: term.summary,
     simpleExplanation: simplifyExplanation(term.summary),
-    relatedTerms: relatedTerms.slice(0, 5)
+    relatedTerms: relatedTerms.slice(0, 5),
   };
 }
 
-/**
- * Simplify a technical explanation for non-technical audiences
- */
 function simplifyExplanation(technical: string): string {
-  // This provides a slightly more accessible version
-  // In production, this could use more sophisticated NLP
-  let simple = technical
+  return technical
     .replace(/cross-network/gi, "across multiple blockchains")
     .replace(/execution path/gi, "route")
     .replace(/orchestrated/gi, "managed")
@@ -346,6 +406,4 @@ function simplifyExplanation(technical: string): string {
     .replace(/settlement/gi, "final processing")
     .replace(/interoperability/gi, "ability to work together")
     .replace(/protocol/gi, "system");
-  
-  return simple;
 }

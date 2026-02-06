@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
+    "@notionhq/client": "^5.9.0",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
+    "dotenv": "^17.2.4",
     "express": "^4.21.2",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",

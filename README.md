@@ -39,6 +39,17 @@ Data is fetched from Notion and auto-refreshes every 5 minutes.
 | `sodax_get_terms_by_tag` | Get terms by category tag |
 | `sodax_refresh_glossary` | Force refresh glossary data |
 
+### Marketing Stats (6 tools)
+
+| Tool | Description |
+|------|-------------|
+| `sodax_get_stats_overview` | High-level marketing stats summary |
+| `sodax_get_networks` | List all supported destination networks |
+| `sodax_get_partners` | List integration partners with details |
+| `sodax_get_token_supply` | SODA token supply breakdown |
+| `sodax_get_money_market_assets` | Supported assets and TVL data |
+| `sodax_refresh_stats` | Force refresh stats cache |
+
 ## Quick Start
 
 ### Claude Desktop
@@ -78,6 +89,7 @@ pnpm start
 | `PORT` | `3000` | Server port |
 | `TRANSPORT` | `http` | Transport mode (`http` or `stdio`) |
 | `NODE_ENV` | - | Set to `production` for deployment |
+| `NOTION_TOKEN` | - | Notion integration token for live glossary sync (falls back to hardcoded data if unset) |
 
 ## API Endpoints
 
@@ -104,6 +116,12 @@ Once connected, try asking:
 - *"What terms relate to the Money Market feature?"*
 - *"List all technical concepts I should know about"*
 
+### Marketing Stats
+- *"How many networks does SODAX support?"*
+- *"Who are our integration partners?"*
+- *"What's the current SODA token supply?"*
+- *"Give me a stats overview for a press release"*
+
 ## Deployment
 
 ### Docker
@@ -124,6 +142,7 @@ docker-compose up -d
 The included `nixpacks.toml` handles deployment automatically. Set these environment variables:
 - `PORT=3000`
 - `NODE_ENV=production`
+- `NOTION_TOKEN=<your-notion-integration-token>`
 
 ## Project Structure
 
@@ -131,12 +150,16 @@ The included `nixpacks.toml` handles deployment automatically. Set these environ
 marketing-sodax-mcp-server/
 ├── src/
 │   ├── index.ts               # Entry point
-│   ├── constants.ts           # Brand bible config
+│   ├── constants.ts           # Configuration
 │   ├── types.ts               # TypeScript types
 │   ├── services/
-│   │   └── brandBible.ts      # Notion fetching/parsing
+│   │   ├── brandBible.ts      # Notion Brand Bible
+│   │   ├── glossary.ts        # Notion Glossary
+│   │   └── stats.ts           # SODAX API stats
 │   ├── tools/
-│   │   └── brandBible.ts      # Tool definitions
+│   │   ├── brandBible.ts      # Brand Bible tools
+│   │   ├── glossary.ts        # Glossary tools
+│   │   └── stats.ts           # Stats tools
 │   └── public/
 │       └── index.html         # Landing page
 ├── package.json

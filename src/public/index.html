@@ -7,7 +7,7 @@
   <!-- Primary Meta Tags -->
   <title>SODAX Marketing MCP Server | AI-Powered Brand Guidelines & Technical Glossary</title>
   <meta name="title" content="SODAX Marketing MCP Server | AI-Powered Brand Guidelines & Technical Glossary">
-  <meta name="description" content="Connect your AI assistant to SODAX brand guidelines and technical translation tools. 13 MCP tools for marketing teams: brand voice, visual identity, messaging frameworks, and DeFi terminology translation.">
+  <meta name="description" content="Connect your AI assistant to SODAX brand guidelines, technical translation tools, and live marketing stats. 19 MCP tools for marketing teams: brand voice, visual identity, messaging frameworks, DeFi terminology translation, and real-time network statistics.">
   <meta name="keywords" content="MCP server, Model Context Protocol, SODAX, brand guidelines, AI marketing tools, DeFi glossary, technical translation, brand bible, marketing automation">
   <meta name="author" content="ICON Foundation">
   <meta name="robots" content="index, follow">
@@ -17,7 +17,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://marketing.sodax.com/">
   <meta property="og:title" content="SODAX Marketing MCP Server | AI-Powered Brand Guidelines">
-  <meta property="og:description" content="Connect your AI assistant to SODAX brand guidelines and technical translation tools. 13 MCP tools for marketing teams.">
+  <meta property="og:description" content="Connect your AI assistant to SODAX brand guidelines, technical translation tools, and live marketing stats. 19 MCP tools for marketing teams.">
   <meta property="og:image" content="https://marketing.sodax.com/images/link-preview.png">
   <meta property="og:site_name" content="SODAX">
   
@@ -917,7 +917,7 @@
       <div class="section-title">
         <h2 id="tools-heading">Available Tools</h2>
       </div>
-      <p class="section-subtitle">13 tools across 2 categories for marketing teams.</p>
+      <p class="section-subtitle">19 tools across 3 categories for marketing teams.</p>
       
       <div class="tools-grid">
         <div class="tool-module">
@@ -956,7 +956,7 @@
         
         <div class="tool-module">
           <h3>Technical Glossary</h3>
-          <p>Translate complex DeFi and blockchain terminology into accessible language for any audience.</p>
+          <p>Sourced live from two Notion databases — <strong>System Concepts</strong> and <strong>System Components</strong> — with category filtering and plain-language translation.</p>
           <div class="tool-list">
             <div class="tool-item">
               <code>sodax_get_glossary_overview</code>
@@ -964,7 +964,7 @@
             </div>
             <div class="tool-item">
               <code>sodax_list_glossary_terms</code>
-              <span>List all terms</span>
+              <span>List terms (filter by category)</span>
             </div>
             <div class="tool-item">
               <code>sodax_get_glossary_term</code>
@@ -980,15 +980,49 @@
             </div>
             <div class="tool-item">
               <code>sodax_get_terms_by_tag</code>
-              <span>Get by category</span>
+              <span>Get by tag &amp; category</span>
             </div>
             <div class="tool-item">
               <code>sodax_refresh_glossary</code>
-              <span>Refresh data</span>
+              <span>Refresh from Notion</span>
             </div>
           </div>
           <div class="badge-row" style="margin-top: 1rem;">
             <span class="badge">7 tools</span>
+          </div>
+        </div>
+        
+        <div class="tool-module">
+          <h3>Marketing Stats</h3>
+          <p>Live data from the SODAX API: integrated networks, partners, token supply, and money market metrics.</p>
+          <div class="tool-list">
+            <div class="tool-item">
+              <code>sodax_get_stats_overview</code>
+              <span>Key metrics overview</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_networks</code>
+              <span>List integrated networks</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_partners</code>
+              <span>List partner integrations</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_token_supply</code>
+              <span>SODA token supply</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_get_money_market_assets</code>
+              <span>Money market assets</span>
+            </div>
+            <div class="tool-item">
+              <code>sodax_refresh_stats</code>
+              <span>Refresh live data</span>
+            </div>
+          </div>
+          <div class="badge-row" style="margin-top: 1rem;">
+            <span class="badge">6 tools</span>
           </div>
         </div>
       </div>
@@ -1007,12 +1041,24 @@
           </div>
           <div class="sdk-column">
             <div class="sdk-number">2</div>
-            <h4>Technical Glossary</h4>
-            <p>Translation database for DeFi & blockchain terminology</p>
+            <h4>System Concepts</h4>
+            <p>High-level ideas and principles behind SODAX, fetched via the Notion API</p>
             <span class="badge">Live sync</span>
           </div>
           <div class="sdk-column">
             <div class="sdk-number">3</div>
+            <h4>System Components</h4>
+            <p>Concrete parts and modules that make up SODAX, fetched via the Notion API</p>
+            <span class="badge">Live sync</span>
+          </div>
+          <div class="sdk-column">
+            <div class="sdk-number">4</div>
+            <h4>SODAX API</h4>
+            <p>Live network, partner, and token stats from api.sodax.com</p>
+            <span class="badge">Live sync</span>
+          </div>
+          <div class="sdk-column">
+            <div class="sdk-number">5</div>
             <h4>5-Minute Cache</h4>
             <p>Fast responses with automatic refresh for fresh data</p>
             <span class="badge">Optimized</span>
